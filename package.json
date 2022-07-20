@@ -1,0 +1,7 @@
+{
+  "name": "dev.fxdigital.snake",
+  "description": "snake",
+  "dependencies": {
+    "@lightningjs/sdk": "^4.8.3"
+  }
+}
