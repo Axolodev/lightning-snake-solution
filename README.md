@@ -1,17 +1,19 @@
 # Lightning Intermediate code challenge
 
-Welcome to the intermediate-level code challenge for Lightning! If you have not watched this series of videos, make sure to watch them [here](https://www.notion.so/fxdigital/Intermediate-Lightning-Training-654b90ec60dc4da98a30a4c9503e594f).
+Welcome to the intermediate-level code challenge for Lightning!
+
+[Try out the app here](https://lightning-snake.vercel.app/#mainMenu)
 
 ## About this challenge
 
 This app is made for two reasons:
 
-- First one is to test your Lightning knowledge. Don't worry, this won't determine your paycheck! However, if you're struggling with this it might be worth revisiting the videos.
+- First one is to test your Lightning knowledge. Don't worry, this won't determine your paycheck! However, if you're struggling with this it might be worth revisiting the [workshop videos](https://www.notion.so/fxdigital/Intermediate-Lightning-Training-654b90ec60dc4da98a30a4c9503e594f).
 - Second is to showcase some things Lightning can do. Our main goal at Fx is to use Lightning for smart-tv application development... but it can do more than that!
 
-##
+## Tasks
 
-Challenges:
+To finish this app you'll need to do a series of tasks that are listed below:
 
 - Make this app a Router-based one, and add all the pages in the `pages/` folder to the routes.
 - Add Navigation! You'll need to revisit two concepts for this: `Signals` and `Navigation`.
