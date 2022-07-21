@@ -77,7 +77,6 @@ class Game extends Lightning.Component {
 
   _active() {
     this.game = new GameEngine();
-    console.log("_active");
     this.game.setup();
     this.game.onUpdate(this.renderGame);
     this.game.onGameEnd(this.gameEndHandler);

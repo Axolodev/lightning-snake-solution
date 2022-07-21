@@ -1,4 +1,4 @@
-import { getRandomInt } from "../utils";
+import { getRandomInt, saveNewHighscore } from "../utils";
 
 export const Directions = {
   UP: "up",
@@ -79,6 +79,9 @@ export default class GameEngine {
 
     if (this.snake.isDead) {
       this.gameloopShouldContinue = false;
+      let score = this.snake.tail.length - 3;
+      score = score < 0 ? 0 : score;
+      saveNewHighscore(score);
       this.onGameEndHandler();
       return;
     }
