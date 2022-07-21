@@ -5,7 +5,7 @@ function setFavicon() {
   try {
     document.querySelector("link[rel*='icon']").href = "static/favicon.ico";
   } catch (exception) {
-    console.log(
+    console.error(
       "I don't really want to deal with this exception, but here it is:",
       exception
     );
