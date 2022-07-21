@@ -1,4 +1,4 @@
-import { Lightning, Colors } from "@lightningjs/sdk";
+import { Lightning, Colors, Router } from "@lightningjs/sdk";
 import fontStyles from "../lib/fontStyles";
 import GameEngine, { Directions } from "../lib/game";
 import styles from "../lib/styles";
@@ -32,6 +32,7 @@ class Game extends Lightning.Component {
 
   _construct() {
     this.renderGame = this.renderGame.bind(this);
+    this.gameEndHandler = this.gameEndHandler.bind(this);
   }
 
   cellSize = 100;
@@ -39,12 +40,10 @@ class Game extends Lightning.Component {
   itemSize = 80;
 
   renderGame() {
-    console.log("Render");
-    const { snake, food } = this.game.gameObjects;
+    const { snake, food, score } = this.game.gameObjects;
     const children = [];
 
     snake.tail.forEach((tail) => {
-      console.log(tail.x, tail.y);
       children.push({
         x: tail.x * this.cellSize + this.tailItemPadding,
         y: tail.y * this.cellSize + this.tailItemPadding,
@@ -52,7 +51,7 @@ class Game extends Lightning.Component {
         h: this.itemSize,
 
         rect: true,
-        color: Colors("white").get(),
+        color: Colors(snake.color).get(),
       });
     });
 
@@ -63,22 +62,33 @@ class Game extends Lightning.Component {
       h: this.itemSize,
 
       rect: true,
-      color: Colors("red").get(),
+      color: Colors(food.color).get(),
     });
 
     this.tag("GameItems").children = children;
+
+    this.tag("Score").text = `Score: ${score}`;
+  }
+
+  gameEndHandler() {
+    this.game = null;
+    Router.navigate("highscore");
   }
 
   _active() {
-    console.log("Active");
     this.game = new GameEngine();
+    console.log("_active");
     this.game.setup();
     this.game.onUpdate(this.renderGame);
+    this.game.onGameEnd(this.gameEndHandler);
     this.game.enableGameLoop();
   }
 
   _disable() {
-    this.game.disableGameLoop();
+    if (this.game) {
+      this.game.disableGameLoop();
+      this.game = null;
+    }
   }
 
   _handleUp() {

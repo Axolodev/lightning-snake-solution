@@ -1,3 +1,5 @@
+import { getRandomInt } from "../utils";
+
 export const Directions = {
   UP: "up",
   DOWN: "down",
@@ -16,11 +18,17 @@ export default class GameEngine {
     this.update();
     this.previousTime = currentTimestamp;
 
-    requestAnimationFrame(this.gameLoop);
+    if (this.gameloopShouldContinue) {
+      requestAnimationFrame(this.gameLoop);
+    }
   }
 
   onUpdate(onUpdateHandler) {
     this.onUpdateHandler = onUpdateHandler;
+  }
+
+  onGameEnd(onGameEndHandler) {
+    this.onGameEndHandler = onGameEndHandler;
   }
 
   enableGameLoop() {
@@ -32,9 +40,11 @@ export default class GameEngine {
   }
 
   get gameObjects() {
+    const score = this.snake.tail.length - 3;
     return {
       snake: this.snake,
       food: this.food,
+      score: score < 0 ? 0 : score,
     };
   }
 
@@ -43,13 +53,14 @@ export default class GameEngine {
     this.snake = new Snake();
     this.food = new Food();
     this.timeSinceLastUpdate = 0;
+    this.gameloopShouldContinue = true;
   }
 
   handle(direction) {
     this.snake.handle(direction);
   }
 
-  updateTimeWindow = 300;
+  updateTimeWindow = 200;
   timeSinceLastUpdate = 0;
 
   update() {
@@ -60,16 +71,28 @@ export default class GameEngine {
 
     this.snake.update();
 
-    this.timeSinceLastUpdate = 0;
+    const snakeHead = this.snake.tail[0];
+
+    if (snakeHead.x === this.food.x && snakeHead.y === this.food.y) {
+      this.snake.eat(this.food);
+    }
+
+    if (this.snake.isDead) {
+      this.gameloopShouldContinue = false;
+      this.onGameEndHandler();
+      return;
+    }
 
     if (this.onUpdateHandler) {
       this.onUpdateHandler();
     }
+
+    this.timeSinceLastUpdate = 0;
   }
 }
 
 class Snake {
-  color = "white";
+  color = "olive";
 
   constructor() {
     this.xSpeed = 1;
@@ -79,6 +102,8 @@ class Snake {
     this.tail.push(new Tail(2, 0));
     this.tail.push(new Tail(1, 0));
     this.tail.push(new Tail(0, 0));
+
+    this.isDead = false;
   }
 
   get tail() {
@@ -96,32 +121,56 @@ class Snake {
   }
 
   handle(direction) {
+    if (!this.allowNextMove) return;
+
     if (direction === Directions.UP && this.ySpeed !== 1) {
       this.xSpeed = 0;
       this.ySpeed = -1;
+      this.allowNextMove = false;
     }
     if (direction === Directions.DOWN && this.ySpeed !== -1) {
       this.xSpeed = 0;
       this.ySpeed = 1;
+      this.allowNextMove = false;
     }
     if (direction === Directions.LEFT && this.xSpeed !== 1) {
       this.xSpeed = -1;
       this.ySpeed = 0;
+      this.allowNextMove = false;
     }
     if (direction === Directions.RIGHT && this.xSpeed !== -1) {
       this.xSpeed = 1;
       this.ySpeed = 0;
+      this.allowNextMove = false;
     }
   }
 
+  get head() {
+    return this.tail[0];
+  }
+
   update() {
+    this.allowNextMove = true;
+
     for (let i = this.tail.length - 1; i > 0; i--) {
       this.tail[i].x = this.tail[i - 1].x;
       this.tail[i].y = this.tail[i - 1].y;
     }
 
-    this.tail[0].x += this.xSpeed;
-    this.tail[0].y += this.ySpeed;
+    this.head.x += this.xSpeed;
+    this.head.y += this.ySpeed;
+
+    const head = this.head;
+    this.isDead = this.tail.some(
+      (tail, index) => index !== 0 && head.x === tail.x && head.y === tail.y
+    );
+    this.isDead =
+      this.isDead || head.x < 0 || head.x > 18 || head.y < 0 || head.y > 10;
+  }
+
+  eat(food) {
+    this.tail.push(new Tail(food.x, food.y));
+    food.pickNewLocation(this.head.x, this.head.y);
   }
 }
 
@@ -133,7 +182,7 @@ class Tail {
 }
 
 class Food {
-  color = "olive";
+  color = "orange";
 
   constructor() {
     this.x = 8;
@@ -154,5 +203,18 @@ class Food {
 
   get y() {
     return this._y;
+  }
+
+  pickNewLocation(snakeX, snakeY) {
+    let x = getRandomInt(18);
+    let y = getRandomInt(10);
+
+    while (snakeX === x && snakeY === y) {
+      x = getRandomInt(18);
+      y = getRandomInt(10);
+    }
+
+    this.x = x;
+    this.y = y;
   }
 }
