@@ -75,7 +75,7 @@ class Game extends Lightning.Component {
     Router.navigate("highscore");
   }
 
-  _active() {
+  startGame() {
     this.game = new GameEngine();
     this.game.setup();
     this.game.onUpdate(this.renderGame);
@@ -83,11 +83,19 @@ class Game extends Lightning.Component {
     this.game.enableGameLoop();
   }
 
-  _disable() {
+  endGame() {
     if (this.game) {
       this.game.disableGameLoop();
       this.game = null;
     }
+  }
+
+  _active() {
+    this.startGame();
+  }
+
+  _disable() {
+    this.endGame();
   }
 
   _handleUp() {

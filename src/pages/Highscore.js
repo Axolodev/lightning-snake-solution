@@ -25,7 +25,7 @@ class Highscore extends Lightning.Component {
           text: {
             text: "| Highscores |",
             ...fontStyles.title,
-            textColor: Colors("white").get(),
+            textColor: Colors("green").get(),
           },
         },
 

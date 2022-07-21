@@ -1,6 +1,7 @@
 import { Lightning, Utils, Colors, Router } from "@lightningjs/sdk";
-import MenuItem from "../components/MenuItem";
+import Button from "../components/Button";
 import fontStyles from "../lib/fontStyles";
+import styles from "../lib/styles";
 
 class MainMenu extends Lightning.Component {
   static _template() {
@@ -52,18 +53,21 @@ class MainMenu extends Lightning.Component {
         },
 
         PlayItem: {
-          type: MenuItem,
-          content: "Play",
+          type: Button,
+          title: "Play",
           signals: {
-            menuItemSignal: "_handleMenuItemSignal",
+            buttonPressed: "_handlePlayItemSignal",
           },
         },
 
         HighscoreItem: {
-          type: MenuItem,
-          content: "Highscore",
+          type: Button,
+          title: "Highscore",
+          flexItem: {
+            marginTop: styles.spacing.medium,
+          },
           signals: {
-            menuItemSignal: "_handleMenuItemSignal",
+            buttonPressed: "_handleHighscoreItemSignal",
           },
         },
       },
@@ -84,12 +88,12 @@ class MainMenu extends Lightning.Component {
     this._index = 0;
   }
 
-  _handleMenuItemSignal(itemName) {
-    if (itemName === "Play") {
-      Router.navigate("game");
-    } else {
-      Router.navigate("highscore");
-    }
+  _handlePlayItemSignal() {
+    Router.navigate("game");
+  }
+
+  _handleHighscoreItemSignal() {
+    Router.navigate("highscore");
   }
 }
 
