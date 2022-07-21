@@ -2,7 +2,7 @@
 
 Welcome to the intermediate-level code challenge for Lightning!
 
-[Try out the app here](https://lightning-snake.vercel.app/#mainMenu)
+[Try out a finished version of the app here](https://lightning-snake.vercel.app/#mainMenu)
 
 ## About this challenge
 
